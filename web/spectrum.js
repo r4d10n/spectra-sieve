@@ -535,34 +535,82 @@ Spectrum.prototype.onKeypress = function(e) {
             this.toggleAutoScale();
             break;
         case "f":
-            this.decrementFrequency();
+            if (e.shiftKey) {
+                let freq_input = prompt("Frequency:", this.centerHz/1e6);
+                var freq = { freq : (freq_input * 1e6) };
+                this.ws.send(JSON.stringify(freq));
+            }
+            else this.decrementFrequency();
             break;
         case "F":
-            this.incrementFrequency();
+            if (e.shiftKey) {
+                let freq = prompt("Frequency:", this.centerHz/1e6);
+                var freq_json = { freq : (freq * 1e6) };
+                this.ws.send(JSON.stringify(freq_json));
+            }
+            else this.incrementFrequency();
             break;
         case "s":
-            this.decrementSpan();
+            if (e.shiftKey) {
+                let span = prompt("Span:", this.spanHz/1e6);
+                var span_json = { span : (span * 1e6) };
+                this.ws.send(JSON.stringify(span_json));
+            }
+            else this.decrementSpan();
             break;
         case "S":
-            this.incrementSpan();
+            if (e.shiftKey) {
+                let span = prompt("Span:", this.spanHz);
+                var span_json = { span : (span * 1e6) };
+                this.ws.send(JSON.stringify(span_json));
+            }
+            else this.incrementSpan();
             break;        
         case "g":
-            this.decrementGain();
+            if (e.shiftKey) {
+                let gainVal = prompt("Gain:", this.gain);
+                var gain_json = { gain : gainVal };
+                this.ws.send(JSON.stringify(gain_json));
+            }
+            else this.decrementGain();
             break;
         case "G":
-            this.incrementGain();
+            if (e.shiftKey) {
+                let gainVal = prompt("Gain:", this.gain);
+                var gain_json = { gain : gainVal };
+                this.ws.send(JSON.stringify(gain_json));
+            }
+            else this.incrementGain();
             break;
         case "p":
-            this.decrementFps();
+            if (e.shiftKey) {
+                let framerate = prompt("Framerate:", this.fps);
+                var fps_json = { fps : framerate };
+                this.ws.send(JSON.stringify(fps_json));
+            }
+            else this.decrementFps();
             break;
         case "P":
-            this.incrementFps();
+            if (e.shiftKey) {
+                let framerate = prompt("Framerate:", this.fps);
+                var fps_json = { fps : framerate };
+                this.ws.send(JSON.stringify(fps_json));
+            }
+            else this.incrementFps();
             break;
         case "t":
-            this.decrementTuningStep();
+            if (e.shiftKey) {
+                let step = prompt("Tuning Step:", this.tuningStep / 1e6);
+                this.tuningStep = (step * 1e6);
+            }
+            else this.decrementTuningStep();
             break;
         case "T":
-            this.incrementTuningStep();
+            if (e.shiftKey) {
+                let step = prompt("Tuning Step:", this.tuningStep / 1e6);
+                this.tuningStep = (step * 1e6);
+            }
+            else this.incrementTuningStep();
             break;
         case "d":
             this.downloadWFImage();

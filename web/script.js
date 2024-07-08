@@ -1,6 +1,7 @@
 'use strict';
 
 var spectrum, logger, ws;
+const canvas = document.getElementById('waterfall');;
 
 function connectWebSocket(spectrum) {
 
@@ -27,7 +28,8 @@ function connectWebSocket(spectrum) {
             spectrum.addData(data.s);
         } else {
             if (data.center) {
-                spectrum.setCenterHz(data.center);                
+                spectrum.setCenterHz(data.center);
+                //console.log(data.center/1e6);
             }
             if (data.span) {
                 spectrum.setSpanHz(data.span);
@@ -38,11 +40,38 @@ function connectWebSocket(spectrum) {
             if (data.framerate) {
                 spectrum.setFps(data.framerate);
             }
-            spectrum.log(" > Freq:" + data.center / 1000000 + " MHz | Span: " + data.span / 1000000 + " MHz | Gain: " + data.gain + "dB | Fps: " + data.framerate);
+            spectrum.log(" > Freq:" + data.center / 1e6 + " MHz | Span: " + data.span / 1e6 + " MHz | Tuning Step: " + spectrum.tuningStep/1e6 + " MHz | Gain: " + data.gain + "dB | Fps: " + data.framerate);
         }
     }
 }
 
+function updateTooltip(x, y) {
+    let pxfreqratio = spectrum.canvas.width / (spectrum.spanHz/1e6);
+    let mouseFreq = (x / pxfreqratio) + ((spectrum.centerHz - (spectrum.spanHz/2)) / 1e6) ;
+    mouseFreq = Number(mouseFreq).toFixed(2);
+
+    //tooltip.innerHTML = `X: ${x}, Y: ${y} | ${mouseFreq}M`;
+    tooltip.innerHTML = `${mouseFreq}M`;
+    tooltip.style.top = `${y+10}px`;
+    tooltip.style.left = `${x}px`;
+    tooltip.style.display = 'block';
+}
+
+const box = { x: 0, y: 0, w: 0, h: 0 };
+
+function drawBox(e) {
+    const ctx = canvas.getContext('2d');
+    const rect = canvas.getBoundingClientRect();
+
+    const x = Math.min(e.clientX, rect.right);
+    const y = Math.min(e.clientY, rect.bottom);
+    const w = Math.abs(e.clientX - box.x);
+    const h = Math.abs(e.clientY - box.y);
+
+    //ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = 'rgba(0,0,0,0.1)';
+    ctx.fillRect(Math.min(box.x, x), Math.min(box.y, y), w, h);    
+}
 
 function main() {
     
@@ -61,7 +90,25 @@ function main() {
         spectrum.onKeypress(e);
     });
 
-    
+    // Bind tooltip
+    let tooltip = document.getElementById('tooltip');
+
+    canvas.addEventListener('mousemove', (event) => {
+      updateTooltip(event.clientX, event.clientY);
+    });
+
+    canvas.addEventListener('mouseout', () => {
+      tooltip.style.display = 'none';
+    });
+
+    canvas.addEventListener('mousedown', (e) => {
+        box.x = e.offsetX;
+        box.y = e.offsetY;
+        canvas.addEventListener('mousemove', drawBox);
+        canvas.addEventListener('mouseup', () => {
+          canvas.removeEventListener('mousemove', drawBox);
+        });
+    });
 }
 
 window.onload = main;
