@@ -1,1 +1,0 @@
-/usr/bin/c++ -rdynamic CMakeFiles/spectra_sieve.dir/src/iio_interface.cpp.o CMakeFiles/spectra_sieve.dir/src/spectra_sieve.cpp.o CMakeFiles/spectra_sieve.dir/src/websocket_server.cpp.o -o spectra_sieve  -lpthread -ldl -lrt -liio -lfftw3f -lm /home/rax/exp/pluto/fast-spectrum/git/spectrum-sieve/lib/libcivetweb.a 

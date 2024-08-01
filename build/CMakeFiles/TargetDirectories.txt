@@ -1,3 +1,0 @@
-/home/rax/exp/pluto/fast-spectrum/git/spectrum-sieve/build/CMakeFiles/spectra_sieve.dir
-/home/rax/exp/pluto/fast-spectrum/git/spectrum-sieve/build/CMakeFiles/edit_cache.dir
-/home/rax/exp/pluto/fast-spectrum/git/spectrum-sieve/build/CMakeFiles/rebuild_cache.dir
