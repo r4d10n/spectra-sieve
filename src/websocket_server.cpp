@@ -25,13 +25,13 @@ class WebSocketHandler : public CivetWebSocketHandler
 
 	virtual bool handleConnection(CivetServer *server,
 	                              const struct mg_connection *conn) {
-		printf("WS connected\n");
+		fprintf(stderr,"WS connected\n");
 		return true;
 	}
 
 	virtual void handleReadyState(CivetServer *server,
 	                              struct mg_connection *conn) {
-		printf("WS ready\n");
+		fprintf(stderr,"WS ready\n");
 
         std::lock_guard<std::mutex> l(connectionsLock_);
         connections_.insert(conn);
@@ -46,9 +46,9 @@ class WebSocketHandler : public CivetWebSocketHandler
 	                        int bits,
 	                        char *data,
 	                        size_t data_len) {
-		printf("WS got %lu bytes: ", (long unsigned)data_len);
-		fwrite(data, 1, data_len, stdout);
-		printf("\n");
+		fprintf(stderr,"WS got %lu bytes: ", (long unsigned)data_len);
+		fwrite(data, 1, data_len, stderr);
+		fprintf(stderr,"\n");
 
         update_params.push_back(data);
 
@@ -64,18 +64,18 @@ class WebSocketHandler : public CivetWebSocketHandler
         auto it = connections_.find(const_cast<struct mg_connection *>(conn));
         if (it != connections_.end())
             connections_.erase(it);
-		printf("WS closed\n");
+		fprintf(stderr,"WS closed\n");
 	}  
 
     public:
-        void process(uint16_t *bin, int fftlen);
+        void process_data(float *bin, int fftlen);
         void process_param(char *param);
         void send(char *data, int len, int MessageType);
         std::vector<std::string> get_update_params(); 
 };
 
-void WebSocketHandler::process(uint16_t *bin, int fftlen) {
-    send((char *)bin, fftlen * 2, MG_WEBSOCKET_OPCODE_BINARY);
+void WebSocketHandler::process_data(float *bin, int fftlen) {    
+    send((char *)bin, fftlen * 4, MG_WEBSOCKET_OPCODE_BINARY);    
 }
 
 void WebSocketHandler::process_param(char *param) {

@@ -1,10 +1,9 @@
-#ifndef WEB_SOCKET_HANDLER_H
-#define WEB_SOCKET_HANDLER_H
+#pragma once
 
 #include <mutex>
 #include <unordered_set>
 #include <vector>
-#include <CivetServer.h>
+#include <civet/CivetServer.h>
 
 class WebSocketHandler : public CivetWebSocketHandler {
     public:
@@ -17,7 +16,7 @@ class WebSocketHandler : public CivetWebSocketHandler {
         virtual void handleClose(CivetServer *server, const struct mg_connection *conn);
 
     public:
-        void process(uint16_t *bin, int fftlen);
+        void process_data(float *bin, int fftlen);
         void process_param(char *param);
         void send(char *data, int len, int MessageType);
         std::vector<std::string> get_update_params();
@@ -27,5 +26,3 @@ class WebSocketHandler : public CivetWebSocketHandler {
         std::unordered_set<struct mg_connection *> connections_;
         std::vector<std::string> update_params;
 };
-
-#endif  // WEB_SOCKET_HANDLER_H

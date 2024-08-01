@@ -11,8 +11,15 @@ function connectWebSocket(spectrum) {
     spectrum.setWebSocket(ws);
   
     ws.onopen = function(evt) {
+        ws.binaryType = 'arraybuffer';
+        console.log("WS opened!");
+    }
+
+    ws.onconnect = function (evt) {
+        ws.binaryType = 'arraybuffer';
         console.log("WS connected!");
     }
+
     ws.onclose = function(evt) {
         console.log("WS closed");
         setTimeout(function() {
@@ -23,10 +30,14 @@ function connectWebSocket(spectrum) {
         console.log("WS error: " + evt.message);
     }
     ws.onmessage = function (evt) {
-        var data = JSON.parse(evt.data);
-        if (data.s) {
-            spectrum.addData(data.s);
-        } else {
+
+        if (evt.data instanceof ArrayBuffer) {
+            spectrum.addData(evt.data);
+        }        
+        else {
+
+            var data = JSON.parse(evt.data);
+
             if (data.center) {
                 spectrum.setCenterHz(data.center);
                 //console.log(data.center/1e6);
@@ -39,7 +50,11 @@ function connectWebSocket(spectrum) {
             }
             if (data.framerate) {
                 spectrum.setFps(data.framerate);
+<<<<<<< Updated upstream
             }
+=======
+            }            
+>>>>>>> Stashed changes
             spectrum.log(" > Freq:" + data.center / 1e6 + " MHz | Span: " + data.span / 1e6 + " MHz | Tuning Step: " + spectrum.tuningStep/1e6 + " MHz | Gain: " + data.gain + "dB | Fps: " + data.framerate);
         }
     }

@@ -203,16 +203,18 @@ Spectrum.prototype.updateAxes = function() {
 }
 
 Spectrum.prototype.addData = function(data) {
+    this.databin = new Float32Array(data); 
+
     if (!this.paused) {
-        if (data.length != this.wf_size) {
-            this.wf_size = data.length;
-            this.ctx_wf.canvas.width = data.length;
+        if (this.databin.length != this.wf_size) {
+            this.wf_size = this.databin.length;
+            this.ctx_wf.canvas.width = this.databin.length;
             this.ctx_wf.fillStyle = "black";
             this.ctx_wf.fillRect(0, 0, this.wf.width, this.wf.height);
-            this.imagedata = this.ctx_wf.createImageData(data.length, 1);
+            this.imagedata = this.ctx_wf.createImageData(this.databin.length, 1);
         }
-        this.drawSpectrum(data);
-        this.addWaterfallRow(data);
+        this.drawSpectrum(this.databin);
+        this.addWaterfallRow(this.databin);
         this.resize();
     }
 }
@@ -332,6 +334,12 @@ Spectrum.prototype.setAveraging = function(num) {
         this.alpha = 2 / (this.averaging + 1)
     }
 }
+
+Spectrum.prototype.setWFrows = function(num) {    
+    this.wf_rows = num;
+    this.updateAxes();
+}
+
 
 Spectrum.prototype.setTuningStep = function(num) {
     if (num > 0 && num < 10e6) 
@@ -625,7 +633,7 @@ function Spectrum(id, options) {
     this.gain = (options && options.gain) ? options.gain : 0;
     this.fps = (options && options.fps) ? options.fps : 0;
     this.wf_size = (options && options.wf_size) ? options.wf_size : 0;
-    this.wf_rows = (options && options.wf_rows) ? options.wf_rows : 2048;
+    this.wf_rows = (options && options.wf_rows) ? options.wf_rows : 2560;
     this.spectrumPercent = (options && options.spectrumPercent) ? options.spectrumPercent : 25;
     this.spectrumPercentStep = (options && options.spectrumPercentStep) ? options.spectrumPercentStep : 5;
     this.averaging = (options && options.averaging) ? options.averaging : 6;
