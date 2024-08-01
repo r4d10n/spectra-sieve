@@ -50,11 +50,7 @@ function connectWebSocket(spectrum) {
             }
             if (data.framerate) {
                 spectrum.setFps(data.framerate);
-<<<<<<< Updated upstream
-            }
-=======
-            }            
->>>>>>> Stashed changes
+	    }
             spectrum.log(" > Freq:" + data.center / 1e6 + " MHz | Span: " + data.span / 1e6 + " MHz | Tuning Step: " + spectrum.tuningStep/1e6 + " MHz | Gain: " + data.gain + "dB | Fps: " + data.framerate);
         }
     }
